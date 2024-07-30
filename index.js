@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const phoneBookRoute = require('./routes/PhoneBook')
 const transportRoute = require('./routes/Transport')
+const licenceRoute = require('./routes/Inventory/Licence')
 const userRoute = require('./routes/User')
 const iBoardRoute = require('./routes/iBoard')
 const dashBoardRoute = require('./routes/Dashboard')
@@ -18,6 +19,7 @@ app.use(cors())
 
 app.use('/api/portal/phoneBook', phoneBookRoute)
 app.use('/api/portal/transport', transportRoute)
+app.use('/api/portal/inventory/licence', licenceRoute)
 app.use('/api', userRoute)
 app.use('/api/iboardData', iBoardRoute)
 app.use('/api/dashboarddata', dashBoardRoute)
