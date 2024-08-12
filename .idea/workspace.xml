@@ -23,7 +23,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Node/portal",
+    "last_opened_file_path": "C:/Node/backend",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -38,6 +38,7 @@
       <updated>1722310053165</updated>
       <workItem from="1722310054486" duration="5905000" />
       <workItem from="1722338950697" duration="1198000" />
+      <workItem from="1723438450135" duration="1239000" />
     </task>
     <servers />
   </component>

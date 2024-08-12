@@ -5,10 +5,6 @@ const Licence = require("../../models/Invenory/Licence");
 
 /*Portal Licence add new item*/
 router.post('/',
-   /* body('name'),
-    body('car'),body('carmodel'),
-    body('number'),
-    body('phone').isLength({min: '3'}),*/
     async (req, res)=>{
         try {
             const errors = validationResult(req)
