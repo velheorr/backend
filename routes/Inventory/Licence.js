@@ -8,7 +8,7 @@ router.post('/',
     async (req, res)=>{
         try {
             const errors = validationResult(req)
-            const {org, seller, vendor, lic, key, start, exp, info, notes, amount,  _id} = req.body
+            const {org, seller, vendor, lic, key, start, exp, info, notes, amount, status,  _id} = req.body
 
             if (!errors.isEmpty()){
                 return res.status(400).json({success: false, errors: errors.array()})
@@ -17,10 +17,10 @@ router.post('/',
 
             if (_id){
                 await Licence.replaceOne({"_id": _id}, {
-                    'org': org, 'seller': seller, 'vendor': vendor, 'lic': lic, 'key': key,'start': start,'exp': exp,'info': info,'notes': notes,'amount': amount,
+                    'org': org, 'seller': seller, 'vendor': vendor, 'lic': lic, 'key': key,'start': start,'exp': exp,'info': info,'notes': notes,'amount': amount,'status':status,
                 })
             } else {
-                licItem = new Licence({org, seller, vendor, lic, key, start, exp, info, notes, amount})
+                licItem = new Licence({org, seller, vendor, lic, key, start, exp, info, notes, amount, status: true})
                 await licItem.save()
             }
             const result = {id: 200,message: "Запись успешно добавлена",}

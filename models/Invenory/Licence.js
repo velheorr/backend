@@ -34,6 +34,9 @@ const licence = new Schema({
     amount: {
         type: String,
     },
+    status: {
+        type: Boolean,
+    }
 
 })
 
