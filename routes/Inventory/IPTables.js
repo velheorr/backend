@@ -1,27 +1,27 @@
 const express = require('express')
 const router = express.Router()
 const {body, validationResult} = require("express-validator");
-const Licence = require("../../models/Invenory/Licence");
+const IPtables = require("../../models/Invenory/IPtables");
 
 /*Portal Licence add new item*/
 router.post('/',
     async (req, res)=>{
         try {
             const errors = validationResult(req)
-            const {org, seller, vendor, lic, key, start, exp, info, notes, amount, status,  _id} = req.body
+            const {ip, type, name, info, notes, _id} = req.body
 
             if (!errors.isEmpty()){
                 return res.status(400).json({success: false, errors: errors.array()})
             }
-            let licItem;
+            let ipItem;
 
             if (_id){
-                await Licence.replaceOne({"_id": _id}, {
-                    'org': org, 'seller': seller, 'vendor': vendor, 'lic': lic, 'key': key,'start': start,'exp': exp,'info': info,'notes': notes,'amount': amount,'status':status,
+                await IPtables.replaceOne({"_id": _id}, {
+                    'ip': ip, 'type': type, 'name': name, 'info': info, 'info': info,'notes': notes,
                 })
             } else {
-                licItem = new Licence({org, seller, vendor, lic, key, start, exp, info, notes, amount, status: true})
-                await licItem.save()
+                ipItem = new IPtables({ip, type, name, info, info, notes})
+                await ipItem.save()
             }
             const result = {id: 200,message: "Запись успешно добавлена",}
             res.json({result})
@@ -33,7 +33,7 @@ router.post('/',
 
 router.get('/', async (req, res) => {
     try{
-        const collection = await Licence.find({})
+        const collection = await IPtables.find({})
         res.json(collection)
     }catch (e) {
         console.log(e)
@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
 router.delete('/', async (req, res) =>{
     console.log(req.body.id)
     try{
-        await Licence.deleteOne(req.body.id)
+        await IPtables.deleteOne(req.body.id)
         const result = {id: 200,message: "Номер успешно удален"}
         res.json(result)
     }catch (e) {
