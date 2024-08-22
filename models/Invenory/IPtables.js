@@ -2,7 +2,7 @@ const {Schema, model} = require('mongoose')
 
 const iptables = new Schema({
     ip: {
-        type: Number,
+        type: String,
         required: true
     },
     type: {
