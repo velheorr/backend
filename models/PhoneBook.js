@@ -20,6 +20,10 @@ const phoneBook = new Schema({
         type: String,
         required: true
     },
+    org: {
+        type: String,
+    },
+
 
 })
 

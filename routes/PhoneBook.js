@@ -8,11 +8,12 @@ router.post('/',
     body('name').isLength({min: '3'}),
     body('position'),
     body('dep'),
+    body('org'),
     body('phone').isLength({min: '3'}),
     async (req, res)=>{
         try {
             const errors = validationResult(req)
-            const {name, position, dep, phone, _id} = req.body
+            const {name, position, dep, phone,org, _id} = req.body
 
             if (!errors.isEmpty()){
                 return res.status(400).json({success: false, errors: errors.array()})
@@ -20,7 +21,7 @@ router.post('/',
             let phoneItem;
 
             if (_id){
-                await PhoneBook.replaceOne({"_id": _id}, {'name': name, 'position': position, 'dep': dep, 'phone': phone})
+                await PhoneBook.replaceOne({"_id": _id}, {'name': name, 'position': position, 'dep': dep, 'phone': phone, 'org': org})
             } else {
                 phoneItem = new PhoneBook({name, position,dep, phone})
                 await phoneItem.save()
