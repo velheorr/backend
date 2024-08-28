@@ -1,27 +1,27 @@
 const express = require('express')
 const router = express.Router()
 const {body, validationResult} = require("express-validator");
-const IPtables = require("../../models/Invenory/IPtables");
+const Hardware = require("../../models/Invenory/Hardware");
 
 /*Portal Licence add new item*/
 router.post('/',
     async (req, res)=>{
         try {
             const errors = validationResult(req)
-            const {ip, type, name, info, notes, _id} = req.body
+            const {name, type, price, inventory, factory,date, _id} = req.body
 
             if (!errors.isEmpty()){
                 return res.status(400).json({success: false, errors: errors.array()})
             }
-            let ipItem;
+            let hardwareItem;
 
             if (_id){
-                await IPtables.replaceOne({"_id": _id}, {
-                    'ip': ip, 'type': type, 'name': name,'info': info,'notes': notes,
+                await Hardware.replaceOne({"_id": _id}, {
+                    'name': name, 'type': type, 'price': price,'inventory': inventory,'factory': factory,'date': date
                 })
             } else {
-                ipItem = new IPtables({ip, type, name, info, notes})
-                await ipItem.save()
+                hardwareItem = new Hardware({name, type, price, inventory, factory, date})
+                await hardwareItem.save()
             }
             const result = {id: 200,message: "Запись успешно добавлена",}
             res.json({result})
@@ -33,7 +33,7 @@ router.post('/',
 
 router.get('/', async (req, res) => {
     try{
-        const collection = await IPtables.find({})
+        const collection = await Hardware.find({})
         res.json(collection)
     }catch (e) {
         console.log(e)
@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
 router.delete('/', async (req, res) =>{
     console.log(req.body.id)
     try{
-        await IPtables.deleteOne(req.body.id)
+        await Hardware.deleteOne(req.body.id)
         const result = {id: 200,message: "Номер успешно удален"}
         res.json(result)
     }catch (e) {
