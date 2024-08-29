@@ -15,6 +15,9 @@ const rent = new Schema({
     end: {
         type: String,
     },
+    whoGet: {
+        type: String,
+    },
 
 })
 

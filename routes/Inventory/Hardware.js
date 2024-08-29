@@ -39,7 +39,7 @@ router.post('/rent',
     async (req, res)=>{
         try {
             console.log(req.body)
-            const {status, start, end, person, _id, inventory} = req.body
+            const {status, start, end, person, _id, inventory, whoGet} = req.body
             /*true Значит что выдали*/
             if (!status){
                 await Hardware.findOneAndUpdate({_id: _id},
@@ -53,6 +53,7 @@ router.post('/rent',
 
                     })
             } else {
+                /*false  вернули*/
                 let endDate
                 const date = new Date()
                 end.length < 2 ? endDate = date.toISOString().slice(0, 10) : endDate = end
@@ -63,10 +64,11 @@ router.post('/rent',
                             start: '',
                             end: '',
                             person: '',
+
                         }
                     })
                 const hardwareItemRent = new Rent({
-                    status, start, 'end': endDate, person, inventory
+                    status, start, 'end': endDate, person, inventory, whoGet
                 })
                 await hardwareItemRent.save()
             }
