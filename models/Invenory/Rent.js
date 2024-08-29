@@ -1,25 +1,21 @@
 const {Schema, model} = require('mongoose')
 
 const rent = new Schema({
-    name: {
+    inventory: {
         type: String,
         required: true
     },
-    type: {
+    person: {
         type: String,
     },
-    price: {
+    start: {
+        type: String,
+        required: true
+    },
+    end: {
         type: String,
     },
-    inventory: {
-        type: String,
-    },
-    factory: {
-        type: String,
-    },
-    date: {
-        type: String,
-    },
+
 })
 
 module.exports = model('rent', rent)

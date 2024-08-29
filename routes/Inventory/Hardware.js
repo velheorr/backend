@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {body, validationResult} = require("express-validator");
 const Hardware = require("../../models/Invenory/Hardware");
-const User = require("../../models/User");
+const Rent = require("../../models/Invenory/Rent");
 
 /*Portal Licence add new item*/
 router.post('/',
@@ -10,7 +10,7 @@ router.post('/',
         try {
             const errors = validationResult(req)
             const {
-                name, type, price, inventory, factory,date,note, _id,
+                name, type, price, inventory, factory,date,note, _id, start, end, person
             } = req.body
 
             if (!errors.isEmpty()){
@@ -21,9 +21,12 @@ router.post('/',
             if (_id){
                 await Hardware.replaceOne({"_id": _id}, {
                     'name': name, 'type': type, 'price': price,'inventory': inventory,'factory': factory,'date': date,'note': note,
+                    'start': start, 'end': end, 'person': person
                 })
             } else {
-                hardwareItem = new Hardware({name, type, price, inventory, factory, date, note})
+                hardwareItem = new Hardware({
+                    name, type, price, inventory, factory, date, note, status: false, start: '', end: '', person:''
+                })
                 await hardwareItem.save()
             }
             const result = {id: 200,message: "Запись успешно добавлена",}
@@ -32,20 +35,43 @@ router.post('/',
             res.status(500).send({message: e.message})
         }
     })
-router.post('/startrent',
+router.post('/rent',
     async (req, res)=>{
         try {
-            const {status, start, end, person, _id} = req.body
-            await User.findOneAndUpdate({_id: _id},
-                {
-                    $set: {
-                        status: status,
-                        start: start,
-                        end: end,
-                        person: person,
-                    }
+            console.log(req.body)
+            const {status, start, end, person, _id, inventory} = req.body
+            /*true Значит что выдали*/
+            if (!status){
+                await Hardware.findOneAndUpdate({_id: _id},
+                    {
+                        $set: {
+                            status: true,
+                            start: start,
+                            end: end,
+                            person: person,
+                        }
 
+                    })
+            } else {
+                let endDate
+                const date = new Date()
+                end.length < 2 ? endDate = date.toISOString().slice(0, 10) : endDate = end
+                await Hardware.findOneAndUpdate({_id: _id},
+                    {
+                        $set: {
+                            status: false,
+                            start: '',
+                            end: '',
+                            person: '',
+                        }
+                    })
+                const hardwareItemRent = new Rent({
+                    status, start, 'end': endDate, person, inventory
                 })
+                await hardwareItemRent.save()
+            }
+
+
             const result = {id: 200,message: "Данные обновлены"}
             res.json({result})
         }catch (e) {
@@ -63,7 +89,15 @@ router.get('/', async (req, res) => {
     }
 })
 
-
+router.get('/rent/:what', async (req, res) => {
+    try{
+        const hardwareInv = req.params["what"]
+        const collection = await Rent.find({'inventory': hardwareInv})
+        res.json(collection)
+    }catch (e) {
+        console.log(e)
+    }
+})
 /*router.delete('/', async (req, res) =>{
     console.log(req.body.id)
     try{
