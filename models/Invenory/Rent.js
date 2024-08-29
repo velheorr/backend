@@ -1,6 +1,6 @@
 const {Schema, model} = require('mongoose')
 
-const hardware = new Schema({
+const rent = new Schema({
     name: {
         type: String,
         required: true
@@ -20,23 +20,8 @@ const hardware = new Schema({
     date: {
         type: String,
     },
-    note: {
-        type: String,
-    },
-    status: {
-        type: Boolean,
-    },
-    start: {
-        type: String,
-    },
-    end: {
-        type: String,
-    },
-    person: {
-        type: String,
-    },
 })
 
-module.exports = model('hardware', hardware)
+module.exports = model('rent', rent)
 
 

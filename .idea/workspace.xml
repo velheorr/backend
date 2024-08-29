@@ -28,7 +28,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Node/iboard",
+    "last_opened_file_path": "C:/Node/backend",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -45,6 +45,7 @@
       <workItem from="1722338950697" duration="1198000" />
       <workItem from="1723438450135" duration="4669000" />
       <workItem from="1723609873668" duration="12781000" />
+      <workItem from="1724903143434" duration="4642000" />
     </task>
     <servers />
   </component>
