@@ -34,11 +34,11 @@ const start = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URL, {
             /*Local*/
-            tlsCAFile: process.env.TLS_CA_FILE_LOC,
-            tlsCertificateKeyFile: process.env.TLS_CRT_FILE_LOC,
+            /*tlsCAFile: process.env.TLS_CA_FILE_LOC,
+            tlsCertificateKeyFile: process.env.TLS_CRT_FILE_LOC,*/
             /*Production*/
-            /*tlsCAFile: process.env.TLS_CA_FILE,
-            tlsCertificateKeyFile: process.env.TLS_CRT_FILE,*/
+            tlsCAFile: process.env.TLS_CA_FILE,
+            tlsCertificateKeyFile: process.env.TLS_CRT_FILE,
 
         })
             .then(() => console.log('Успешное подключение к MongoDB с SSL'))

@@ -38,7 +38,6 @@ router.post('/',
 router.post('/rent',
     async (req, res)=>{
         try {
-            console.log(req.body)
             const {status, start, end, person, _id, inventory, whoGet} = req.body
             /*true Значит что выдали*/
             if (!status){
