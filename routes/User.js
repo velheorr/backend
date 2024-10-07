@@ -3,11 +3,13 @@ const router = express.Router()
 const {body, validationResult} = require("express-validator");
 const User = require("../models/User");
 const AuthLog = require("../models/AuthLog");
+const Auth = require("../models/Auth");
 const ResetPassword = require("../models/ResetPassword")
 const encrypt = require("../functions/encryptPassword");
-const sendResetPasswordMail = require("../functions/sendResetPasswordMail");
-const sendAdminReg = require('../functions/sendAdminRegConfirm')
-const sendUserReg = require('../functions/sendUserReg')
+const tokenize = require("../functions/token");
+const sendResetPasswordMail = require("../functions/mail/sendResetPasswordMail");
+const sendAdminReg = require('../functions/mail/sendAdminRegConfirm')
+const sendUserReg = require('../functions/mail/sendUserReg')
 
 
 router.get('/user', async (req, res) => {
@@ -147,17 +149,25 @@ router.post('/login',async (req, res)=>{
         } else if(!checkLogin.auth[from]) {
             return res.status(401).json({ message: 'У вас нет доступа для входа в систему' })
         } else {
+            // логирование
             const date = new Date()
+            const sliceDate = date.toISOString().slice(0, 19)
             let log = {
                 name: login,
                 target: from,
-                date: date.toISOString().slice(0, 19),
+                date: sliceDate,
                 operation: 'login',
             }
             const log_txt = new AuthLog(log)
             await log_txt.save()
-
-            const result = {message: "Авторизация успешна", name: checkLogin.name, position: checkLogin.position}
+            // токенизация
+            const token = await tokenize(login, from)
+            const result = {
+                message: "Авторизация успешна",
+                name: checkLogin.name,
+                position: checkLogin.position,
+                token,
+            }
             return res.json(result)
         }
     }catch (e) {
