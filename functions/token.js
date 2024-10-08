@@ -22,24 +22,28 @@ async function tokenize(login, from) {
 }
 
 async function checkTokenDate(token) {
-    const tokenUser = await Auth.findOne({token: token})
-    if (!tokenUser) {
-        console.log('Token not found');
-        return false; // Токен не найден
+    try {
+        const tokenUser = await Auth.findOne({ token: token }, 'name date token')
+        if (!tokenUser) {
+            return false; // Токен не найден
+        }
+        const userDate = tokenUser.date;
+        if (sliceDate === userDate) {
+           /* console.log(tokenUser)*/
+            return {name: tokenUser.name, token: tokenUser.token}; // Токен действителен
+        } else {
+            await Auth.deleteMany({name: tokenUser.name})
+            return false; // Токен истек
+        }
+    } catch (error) {
+        console.error('Ошибка при проверке токена:', error);
+        throw error; // Или обработайте ошибку по-другому
     }
-
-    const userDate = tokenUser.date;
-
-    if (sliceDate == userDate) {
-        console.log('Token valid');
-        return true; // Токен действителен
-    } else {
-        console.log('Token is expired');
-        return false; // Токен истек
-    }
-
 
 }
 
 
-module.exports = tokenize
+module.exports = {
+    tokenize,
+    checkTokenDate
+}

@@ -6,7 +6,7 @@ const AuthLog = require("../models/AuthLog");
 const Auth = require("../models/Auth");
 const ResetPassword = require("../models/ResetPassword")
 const encrypt = require("../functions/encryptPassword");
-const tokenize = require("../functions/token");
+const {tokenize, checkTokenDate} = require("../functions/token");
 const sendResetPasswordMail = require("../functions/mail/sendResetPasswordMail");
 const sendAdminReg = require('../functions/mail/sendAdminRegConfirm')
 const sendUserReg = require('../functions/mail/sendUserReg')
@@ -161,11 +161,10 @@ router.post('/login',async (req, res)=>{
             const log_txt = new AuthLog(log)
             await log_txt.save()
             // токенизация
-            const token = await tokenize(login, from)
+            const token = await tokenize(checkLogin.name, from)
             const result = {
                 message: "Авторизация успешна",
                 name: checkLogin.name,
-                position: checkLogin.position,
                 token,
             }
             return res.json(result)
@@ -174,7 +173,20 @@ router.post('/login',async (req, res)=>{
         res.status(500).send({message: e.message})
     }
 })
-
+/*Общая авторизация */
+router.post('/reauth',async (req, res)=>{
+    try {
+        const {token} = req.body
+        if (!token) {
+            return res.status(400).send({ message: 'Token is required' });
+        }
+        let check = await checkTokenDate(token);
+        // Возвращаем результат проверки токена
+        return res.json(check);
+    }catch (e) {
+        res.status(500).send({message: e.message})
+    }
+})
 
 
 module.exports = router;
