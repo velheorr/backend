@@ -14,19 +14,28 @@ const sendUserReg = require('../functions/mail/sendUserReg')
 
 router.get('/user', async (req, res) => {
     try{
-        const collection = await User.find({})
-        const newCollection = collection.map(i => {
-            return {
-                _id: i._id,
-                login: i.login,
-                name: i.name,
-                position: i.position,
-                dashboard: i.auth.dashboard,
-                iboard: i.auth.iboard,
-                portal: i.auth.portal,
-            }
-        })
-        res.json(newCollection)
+        const authHeader = req.headers['authorization'];
+        if (!authHeader) {
+            return res.status(401).send('Authorization header is missing');
+        }
+        const bearer = authHeader.split(' ')[1];
+        const token = checkTokenDate(bearer)
+
+        if (token && token !== 'undefined'){
+            const collection = await User.find({})
+            const newCollection = collection.map(i => {
+                return {
+                    _id: i._id,
+                    login: i.login,
+                    name: i.name,
+                    position: i.position,
+                    dashboard: i.auth.dashboard,
+                    iboard: i.auth.iboard,
+                    portal: i.auth.portal,
+                }
+            })
+            res.json(newCollection)
+        }
     }catch (e) {
         console.log(e)
     }
