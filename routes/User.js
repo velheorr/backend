@@ -19,9 +19,9 @@ router.get('/user', async (req, res) => {
             return res.status(401).send('Authorization header is missing');
         }
         const bearer = authHeader.split(' ')[1];
-        const token = checkTokenDate(bearer)
+        const token = await checkTokenDate(bearer)
 
-        if (token && token !== 'undefined'){
+        if (token){
             const collection = await User.find({})
             const newCollection = collection.map(i => {
                 return {
@@ -43,23 +43,34 @@ router.get('/user', async (req, res) => {
 router.post('/user',
     async (req, res) => {
         try {
-            const {name, login, position, iboard, dashboard, portal, _id} = req.body
-            await User.findOneAndUpdate({_id: _id},
-                {
-                    $set: {
-                        name: name,
-                        login: login,
-                        position: position,
-                        auth: {
-                            iboard: iboard,
-                            dashboard: dashboard,
-                            portal: portal,
-                        }
-                    }
+            const authHeader = req.headers['authorization'];
+            if (!authHeader) {
+                return res.status(401).send('Authorization header is missing');
+            }
+            const bearer = authHeader.split(' ')[1];
+            const token = await checkTokenDate(bearer)
 
-                })
-            const result = {id: 200,message: "Данные обновлены"}
-            res.json({result})
+            if (token){
+                const {name, login, position, iboard, dashboard, portal, _id} = req.body
+                await User.findOneAndUpdate({_id: _id},
+                    {
+                        $set: {
+                            name: name,
+                            login: login,
+                            position: position,
+                            auth: {
+                                iboard: iboard,
+                                dashboard: dashboard,
+                                portal: portal,
+                            }
+                        }
+
+                    })
+                const result = {id: 200,message: "Данные обновлены"}
+                res.json({result})
+            }
+
+
         } catch (e) {
             console.log(e)
         }
@@ -182,7 +193,7 @@ router.post('/login',async (req, res)=>{
         res.status(500).send({message: e.message})
     }
 })
-/*Общая авторизация */
+/*реавторизация в течении дня */
 router.post('/reauth',async (req, res)=>{
     try {
         const {token} = req.body
