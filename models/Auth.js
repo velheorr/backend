@@ -5,6 +5,10 @@ const auth = new Schema({
         type: String,
         required: true
     },
+    login: {
+        type: String,
+        required: true
+    },
     target: {
         type: String,
         required: true

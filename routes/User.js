@@ -20,8 +20,7 @@ router.get('/user', async (req, res) => {
         }
         const bearer = authHeader.split(' ')[1];
         const token = await checkTokenDate(bearer)
-
-        if (token){
+        if (token.token){
             const collection = await User.find({})
             const newCollection = collection.map(i => {
                 return {
@@ -50,7 +49,7 @@ router.post('/user',
             const bearer = authHeader.split(' ')[1];
             const token = await checkTokenDate(bearer)
 
-            if (token){
+            if (token.token){
                 const {name, login, position, iboard, dashboard, portal, _id} = req.body
                 await User.findOneAndUpdate({_id: _id},
                     {
@@ -181,7 +180,7 @@ router.post('/login',async (req, res)=>{
             const log_txt = new AuthLog(log)
             await log_txt.save()
             // токенизация
-            const token = await tokenize(checkLogin.name, from)
+            const token = await tokenize(checkLogin.name, from, login)
             const result = {
                 message: "Авторизация успешна",
                 name: checkLogin.name,
@@ -201,7 +200,6 @@ router.post('/reauth',async (req, res)=>{
             return res.status(400).send({ message: 'Token is required' });
         }
         let check = await checkTokenDate(token);
-        // Возвращаем результат проверки токена
         return res.json(check);
     }catch (e) {
         res.status(500).send({message: e.message})

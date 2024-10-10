@@ -6,13 +6,14 @@ const encrypt = require("./encryptPassword");
 const date = new Date()
 const sliceDate = date.toISOString().slice(0, 10)
 
-async function tokenize(login, from) {
+async function tokenize(name, from, login) {
     // токенизация
     const random = Math.random().toFixed(7)
     const token = encrypt(`${sliceDate}${random}/`)
     const authNew = new Auth({
-        name: login,
+        name,
         target: from,
+        login,
         token,
         date: sliceDate,
     })
@@ -23,14 +24,13 @@ async function tokenize(login, from) {
 
 async function checkTokenDate(token) {
     try {
-        const tokenUser = await Auth.findOne({ token: token }, 'name date token')
+        const tokenUser = await Auth.findOne({ token: token }, 'name date token login')
         if (!tokenUser) {
             return false; // Токен не найден
         }
         const userDate = tokenUser.date;
         if (sliceDate === userDate) {
-           /* console.log(tokenUser)*/
-            return {name: tokenUser.name, token: tokenUser.token}; // Токен действителен
+            return {name: tokenUser.name, token: tokenUser.token, login: tokenUser.login}; // Токен действителен
         } else {
             await Auth.deleteMany({name: tokenUser.name})
             return false; // Токен истек
