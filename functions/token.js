@@ -18,7 +18,11 @@ async function tokenize(name, from, login) {
         date: sliceDate,
     })
     await authNew.save()
-    /*const check = await checkTokenDate('U2FsdGVkX1/PpkxYuPm7v3rF4lkGs4kcpJI9MOM9LrbGppUUpeqsLVbhprlhCOpy')*/
+    const list = await Auth.find({ login: login })
+    const clean = list.filter(i => i.date !== sliceDate).map(i => i._id)
+    if (clean.length > 0) {
+        await Auth.deleteMany({ _id: { $in: clean } });
+    }
     return token
 }
 

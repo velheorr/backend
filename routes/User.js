@@ -9,7 +9,7 @@ const encrypt = require("../functions/encryptPassword");
 const {tokenize, checkTokenDate} = require("../functions/token");
 const sendResetPasswordMail = require("../functions/mail/sendResetPasswordMail");
 const sendAdminReg = require('../functions/mail/sendAdminRegConfirm')
-const sendUserReg = require('../functions/mail/sendUserReg')
+const {sendUserReg, sendResetPassByAdmin, sendUserConfirm} = require('../functions/mail/sendUserReg')
 
 
 router.get('/user', async (req, res) => {
@@ -74,8 +74,55 @@ router.post('/user',
             console.log(e)
         }
     })
+/*сброс пароля админом*/
+router.post('/user/AdmReset',async (req, res) => {
+        try {
+            const authHeader = req.headers['authorization'];
+            if (!authHeader) {
+                return res.status(401).send('Authorization header is missing');
+            }
+            const bearer = authHeader.split(' ')[1];
+            const token = await checkTokenDate(bearer)
 
+            if (token.token){
+                const checkAdmin = await User.findOne({login: token.login})
+                if (checkAdmin.admin){
+                    const newPass = encrypt(req.body.pass)
+                    await User.findOneAndUpdate({login: req.body.login},
+                        {
+                            $set: {
+                                password: newPass
+                            }
+                        })
+                    sendResetPassByAdmin(req.body.login, req.body.pass, req.body.name)
+                }
 
+                const result = {id: 200,message: "Данные обновлены"}
+                res.json({result})
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    })
+/*уведомление юзера о предоставлении доступа*/
+router.post('/user/Confirm',async (req, res) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        if (!authHeader) {
+            return res.status(401).send('Authorization header is missing');
+        }
+        const bearer = authHeader.split(' ')[1];
+        const token = await checkTokenDate(bearer)
+
+        if (token.token){
+            sendUserConfirm(req.body.login, req.body.name)
+            const result = {id: 200,message: "Данные обновлены"}
+            res.json({result})
+        }
+    } catch (e) {
+        console.log(e)
+    }
+})
 /*Общая регистрация*/
 router.post('/register',
     body('login').isEmail(),
@@ -96,7 +143,7 @@ router.post('/register',
             }
 
             const ecryptedPASS = encrypt(password)
-            const userNew = new User({login, 'password': ecryptedPASS,name,position: '', auth: {dashboard: false, iboard: false, portal: false}})
+            const userNew = new User({login, 'password': ecryptedPASS,name,position: '', auth: {dashboard: false, iboard: false, portal: false}, admin: false})
             await userNew.save()
             sendAdminReg(login, name)
             sendUserReg(login, name)

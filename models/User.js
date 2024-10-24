@@ -31,6 +31,11 @@ const user = new Schema({
                 type: Boolean,
                 default: false
         }
+    },
+    admin: {
+        required: false,
+        type: Boolean,
+        default: false
     }
 })
 
