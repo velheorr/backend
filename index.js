@@ -44,18 +44,6 @@ const start = async () => {
             .catch(err => console.error('Ошибка подключения к MongoDB:', err))
         app.listen(process.env.PORT, ()=> console.log(`server started: ${process.env.PORT}`)  )
     } catch (e){
-        try {
-            await mongoose.connect(process.env.MONGO_URL, {
-                tlsCAFile: process.env.TLS_CA_FILE,
-                tlsCertificateKeyFile: process.env.TLS_CRT_FILE,
-            })
-                .then(() => console.log('Успешное подключение к MongoDB с SSL'))
-                .catch(err => console.error('Ошибка подключения к MongoDB:', err))
-            app.listen(process.env.PORT, ()=> console.log(`server started: ${process.env.PORT}`)  )
-        } catch (err) {
-            console.error('Ошибка подключения со вторым сертификатом:', err.message);
-            throw new Error('Не удалось подключиться к базе данных с обеими конфигурациями сертификатов');
-        }
         console.log(e)
         process.exit(1)
     }
