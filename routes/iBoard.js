@@ -41,9 +41,10 @@ router.get('/economics/:year/:month', async (req, res) => {
 })
 
 /*IBOARD Получить данные блока экономики линейный график */
-router.get('/eco/linechart/:year', async (req, res) => {
+router.get('/eco/linechart/:year/:type', async (req, res) => {
     const year = req.params.year;
-    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconNarastaushimItogom/${year}`;
+    const type = req.params.type;
+    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconNarastaushimItogom/${year}/${type}`;
     try {
         const response = await axios.get(url);
         res.json(response.data)
@@ -52,9 +53,10 @@ router.get('/eco/linechart/:year', async (req, res) => {
     }
 })
 /*IBOARD Получить данные блока экономики столбиковый график */
-router.get('/eco/barchart/:year', async (req, res) => {
+router.get('/eco/barchart/:year/:type', async (req, res) => {
     const year = req.params.year;
-    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconMesyachniePokazateli/${year}`;
+    const type = req.params.type;
+    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconMesyachniePokazateli/${year}/${type}`;
     try {
         const response = await axios.get(url);
         res.json(response.data)
@@ -63,10 +65,11 @@ router.get('/eco/barchart/:year', async (req, res) => {
     }
 })
 /*IBOARD Получить данные блока экономики карточки */
-router.get('/eco/cards/:year/:month', async (req, res) => {
+router.get('/eco/cards/:year/:month/:type', async (req, res) => {
     const year = req.params.year;
     const month = req.params.month;
-    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconPlitki/${year}/${month}`;
+    const type = req.params.type;
+    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconPlitki/${year}/${month}/${type}`;
     try {
         const response = await axios.get(url);
         res.json(response.data)
