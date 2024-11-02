@@ -106,7 +106,20 @@ router.get('/eco/twocharts/:year/:month/:rp/:type', async (req, res) => {
         console.log(e)
     }
 })
-
+/*IBOARD Получить данные блока экономики Пулевого графика */
+router.get('/eco/bullet/:year/:month/:rp/:type', async (req, res) => {
+    const year = req.params.year;
+    const month = req.params.month;
+    const rp = req.params.rp;
+    const type = req.params.type;
+    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconBullet/${year}/${month}/${rp}/${type}`;
+    try {
+        const response = await axios.get(url);
+        res.json(response.data)
+    }catch (e) {
+        console.log(e)
+    }
+})
 
 module.exports = router;
 
