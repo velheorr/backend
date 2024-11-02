@@ -78,6 +78,35 @@ router.get('/eco/cards/:year/:month/:type', async (req, res) => {
     }
 })
 
+/*IBOARD Получить данные блока экономики воронки */
+router.get('/eco/funnel/:year/:month/:rp/:type', async (req, res) => {
+    const year = req.params.year;
+    const month = req.params.month;
+    const rp = req.params.rp;
+    const type = req.params.type;
+    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconFunnel/${year}/${month}/${rp}/${type}`;
+    try {
+        const response = await axios.get(url);
+        res.json(response.data)
+    }catch (e) {
+        console.log(e)
+    }
+})
+/*IBOARD Получить данные блока экономики двойного графика */
+router.get('/eco/twocharts/:year/:month/:rp/:type', async (req, res) => {
+    const year = req.params.year;
+    const month = req.params.month;
+    const rp = req.params.rp;
+    const type = req.params.type;
+    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEcon2Charts/${year}/${month}/${rp}/${type}`;
+    try {
+        const response = await axios.get(url);
+        res.json(response.data)
+    }catch (e) {
+        console.log(e)
+    }
+})
+
 
 module.exports = router;
 
