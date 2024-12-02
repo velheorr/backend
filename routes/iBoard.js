@@ -121,5 +121,21 @@ router.get('/eco/bullet/:year/:month/:rp/:type', async (req, res) => {
     }
 })
 
+/*IBOARD Получить данные блока экономики детализация воронки */
+router.get('/eco/funneldetails/:year/:month/:type/:rp/:par', async (req, res) => {
+    const year = req.params.year;
+    const month = req.params.month;
+    const rp = req.params.rp;
+    const type = req.params.type;
+    const par = req.params.par;
+    const url = `https://mail.grdn.ru:777/upp_hs/hs/v3/getEconFunnelDetails/${year}/${month}/${type}/${rp}/${par}`;
+    try {
+        const response = await axios.get(url);
+        res.json(response.data)
+    }catch (e) {
+        console.log(e)
+    }
+})
+
 module.exports = router;
 
