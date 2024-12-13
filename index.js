@@ -12,6 +12,7 @@ const licenceRoute = require('./routes/Inventory/Licence')
 const userRoute = require('./routes/User')
 const iBoardRoute = require('./routes/iBoard')
 const dashBoardRoute = require('./routes/Dashboard')
+const testRoute = require('./routes/test/test')
 
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/api/portal/inventory/hardware', hardwareRoute)
 app.use('/api', userRoute)
 app.use('/api/iboardData', iBoardRoute)
 app.use('/api/dashboarddata', dashBoardRoute)
+app.use('/api/test', testRoute)
 
 
 
